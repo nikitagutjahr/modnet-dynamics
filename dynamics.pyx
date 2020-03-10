@@ -1,12 +1,7 @@
 #!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
 
 # Various implementations of the SIS and the CP spreading process.
-# For CP details see [...].
-# For SIS details see [...].
-# For the quasistationary method details see [...].
+# For description see the articles listed in the README.
 
 import numpy as np
 cimport numpy as np
