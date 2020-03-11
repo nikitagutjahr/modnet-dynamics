@@ -1,10 +1,10 @@
 # Griffiths phase width control in modular networks
 
-This code is part of an article in progress by Nikita Gutjahr and Aline Viol.
+This code is part of an article in progress by Nikita Gutjahr and Aline Viol, exploring the influence of topology on the behavior of an existing Griffiths phase in modular networks.
 
 ## Synopsis
 
-This code contains python implementations of the SIS epidemic spreading model and the contact process [1], as well as quasistationary [2] versions of both. Network generation procedures for monodisperse modular networks [3] and hierarchical modular networks [4] are given in networks.py.
+The repository contains python implementations of the SIS epidemic spreading model and the contact process [1], as well as quasistationary [2] implementations of both. Network generation procedures for monodisperse modular networks [3] and hierarchical modular networks [4] are given in networks.py.
 
 [1] Cota, Wesley, and Silvio C. Ferreira. “Optimized Gillespie Algorithms for the Simulation of Markovian Epidemic Processes on Large and Heterogeneous Networks.” Computer Physics Communications 219 (2017): 303–312 [[ArXiv](https://arxiv.org/abs/1704.01557)]
 
