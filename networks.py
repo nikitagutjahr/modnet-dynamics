@@ -171,6 +171,53 @@ def mmn(modul_number, modul_size, kmin, kmax, g, c, offset):
     return network
 
 
+def mmn_uncon(modul_number, modul_size, kmin, kmax, g, c, offset):
+    """Generates a monodisperse modular network.
+
+    MMNs are non-hierarchical, connected modular networks.
+    They consist of sparsely interconnected power-law modules.
+    For details see README.
+
+    Args:
+        modul_number (int): Number of modules
+        modul_size (int): Number of nodes in modules
+        kmin (int): Min degree
+        kmax (int): Max degree
+        g (float): Power-law exponent
+        c (int): Number of intermod. connections
+        offset (int): Degree subtraction
+
+    Returns:
+        gt.Graph: MMN
+    """
+    check_unique = 0  # Checks if inter mod. con. are unique
+    check_con = 0  # Checks if network is connected
+    inter_nodes = np.zeros((modul_number, c))
+    network = gt.Graph(directed=False)
+    # Constructs disconnected modules and combines them in a network
+    # in the graph tool format.
+    for i in range(modul_number):
+        module_network, inter_nodes[i] = configuration_model(
+                                       g, kmin, kmax,
+                                       modul_size, c, offset)
+        # Assigns the nodes to the corresponding module.
+        inter_nodes[i] += i*modul_size
+        network = gt.generation.graph_union(network, module_network)
+
+    inter_nodes = np.transpose(inter_nodes)
+    for row in inter_nodes:
+        np.random.shuffle(row)
+
+    inter_links = inter_nodes.ravel().reshape((int(modul_number*c/2), 2))
+    check_unique = len(np.unique(inter_links, axis=0))
+    network.add_edge_list(inter_links)
+
+    _, check_con = gt.topology.label_components(network)
+    check_con = len(check_con)
+        
+    return network
+
+
 def hmn1(a, p, s, m0):
     """Generates a hierarchical-modular network type 1
 

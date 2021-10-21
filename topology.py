@@ -8,6 +8,7 @@ graph_tool.
 import numpy as np
 import graph_tool as gt
 import dataprep
+from collections import Counter
 from graph_tool.all import *
 
 
@@ -42,29 +43,29 @@ def global_efficiency(g):
 
 def geodesic_entropy(g, n):
     """Returns the geodesic entropy of a node n in graph g."""
-    # Geodesic Probability
     dist = gt.topology.shortest_distance(g, source=n)
     dist_arr = dist.get_array()
     r = int(dist_arr.max())
-    nv = len(dist_arr)
+    num_v = g.num_vertices()
+    count = Counter(dist_arr)
     
     # Geodesic Entropy
     s_geo = 0
     for ri in range(1, r+1):
-        p_r = len(gt.util.find_vertex(g, dist, r))/(nv-1)
+        p_r = p_r = count[ri]/(num_v-1)
         s_geo += -p_r*np.log(p_r)
         
     return s_geo
 
 
-def char_geodesic_entropy(g):
-    """Returns the characteristic geodesic entropy of a given graph g."""
-    n = g.num_vertices()
-    geo_entropy = 0
+def char_geodesic_entropy(g, n):
+    """Returns the char. geodesic entropy of a graph g."""
+    # Calculate the characteristic geodesic entropy
+    geo = 0
     for i in range(n):
-        geo_entropy += geodesic_entropy(g, i)
-
-    return geo_entropy/n
+        geo += geodesic_entropy(g, i)
+    
+    return geo/n
 
 
 def local_eff(g):

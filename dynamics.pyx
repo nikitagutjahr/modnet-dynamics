@@ -21,7 +21,6 @@ import copy
 @cython.wraparound(False)
 @cython.boundscheck(False)
 
-
 def sis(float rate, int t, np.ndarray[long, ndim=1, negative_indices=False,
         mode='c'] start, list neighbor, float kmax, int n):
     """
@@ -117,6 +116,9 @@ def sis(float rate, int t, np.ndarray[long, ndim=1, negative_indices=False,
     return density[:step]
 
 
+@cython.wraparound(False)
+@cython.boundscheck(False)
+
 def sis_qs(float rate, int t, np.ndarray[long, ndim=1, negative_indices=False,
            mode='c'] start, list neighbor, float kmax, int M,
            int n, int rand_size=10000000):
@@ -141,12 +143,12 @@ def sis_qs(float rate, int t, np.ndarray[long, ndim=1, negative_indices=False,
     cdef float s
     cdef int network_size = len(neighbor)
     cdef np.ndarray[double, ndim=1, negative_indices=False,
-                    mode='c'] density = np.zeros(t, dtype=np.float)
+                    mode='c'] density = np.zeros(t+1, dtype=np.float)
     cdef np.ndarray[long, ndim=1, negative_indices=False,
                     mode='c'] active = np.copy(start)
     cdef int Ne = sum([len(neighbor[i]) for i in range(network_size)])
     cdef set inactive = set(range(1, network_size)) - set(start)
-    cdef double Ni = len(start)  # Assumes fully active initial state
+    cdef int Ni = len(start)  # Assumes fully active initial state
     density[0] = Ni/network_size
     cdef double time_length = 0
     cdef int step = 1
@@ -157,8 +159,6 @@ def sis_qs(float rate, int t, np.ndarray[long, ndim=1, negative_indices=False,
     cdef np.ndarray[double, ndim=1, negative_indices=False,
                     mode='c'] rand = np.random.rand(rand_size)
     cdef int rn_index = random.randint(0, rand_size-1)
-    cdef int check = 0
-    
     cdef np.ndarray[long, ndim=2, negative_indices=False,
                     mode='c'] backup_active = np.zeros((M, network_size),
                     dtype=np.int64)
@@ -177,8 +177,7 @@ def sis_qs(float rate, int t, np.ndarray[long, ndim=1, negative_indices=False,
         if rn_index >= rand_size-1000:
             rand = np.random.rand(rand_size)
             rn_index = random.randint(0, rand_size-1)
-            check += 1
-            
+
         # Process selection: Either a node deactivates,
         # or it activates a neighbor node.
         s = Ni/dyn_R
@@ -190,8 +189,8 @@ def sis_qs(float rate, int t, np.ndarray[long, ndim=1, negative_indices=False,
             Ne -= node_deg
             Ni -= 1
             inactive.add(active[node_index])
-            active[node_index] = active[int(Ni)]
-            active[int(Ni)] = 0
+            active[node_index] = active[Ni]
+            active[Ni] = 0
 
         else:
             rn_index += 1
@@ -211,12 +210,12 @@ def sis_qs(float rate, int t, np.ndarray[long, ndim=1, negative_indices=False,
 
             if rand_node in inactive:
                 inactive.remove(rand_node)
-                active[int(Ni)] = rand_node
+                active[Ni] = rand_node
                 node_deg = len(neighbor[rand_node - 1])
                 Ne += node_deg
                 Ni += 1
 
-            while time_length >= step:
+            while time_length > step:
                 density[step] = Ni/network_size
 
                 # Backup of the network state
@@ -241,7 +240,7 @@ def sis_qs(float rate, int t, np.ndarray[long, ndim=1, negative_indices=False,
             Ni = len(np.trim_zeros(active, 'b'))
             inactive = set(range(network_size)) - set(active)
 
-    return density
+    return density[:t]
 
 
 def contact_process(float rate, int t, np.ndarray[long, ndim=1,
