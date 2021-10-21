@@ -1,10 +1,10 @@
-# Griffiths phase width control in modular networks
+# Controlling extended criticality via modular connectivity
 
-This code is part of an article in progress by Nikita Gutjahr and Aline Viol. The article explores the influence of topology on the behavior of an existing Griffiths phase in modular networks.
+This code has been build for the simulations in *Nikita Gutjahr et al 2021 J. Phys. Complex. 2 035023* [[link](https://iopscience.iop.org/article/10.1088/2632-072X/ac202e/meta)]. The paper explores the influence of topology on the behavior of an existing Griffiths phase in modular networks.
 
 ## Synopsis
 
-The repository contains python implementations of the SIS epidemic spreading model and the contact process [1], as well as quasistationary [2] implementations of both. Network generation procedures for monodisperse modular networks [3] and hierarchical modular networks [4] are given in networks.py. The topological network measure that have been used and were not implemented in graph_tool can be found in topology.py.
+The repository contains python implementations of the SIS epidemic spreading model and the contact process [1], as well as quasistationary [2] implementations of both. Network generation procedures for monodisperse modular networks [3] and hierarchical modular networks [4] are given in networks.py. Topological network measures that have been used, and were not implemented in graph_tool, can be found in topology.py.
 
 [1] Cota, Wesley, and Silvio C. Ferreira. “Optimized Gillespie Algorithms for the Simulation of Markovian Epidemic Processes on Large and Heterogeneous Networks.” Computer Physics Communications 219 (2017): 303–312 [[ArXiv](https://arxiv.org/abs/1704.01557)]
 
@@ -18,7 +18,7 @@ The repository contains python implementations of the SIS epidemic spreading mod
 
 Requires the NumPy, SciPy, Cython and graph-tool libraries.
 The dynamics.pyx module needs to be compiled due to optimization with Cython.
-For that run ```python setup.py build_ext --inplace```. Afterwards dynamics can be imported as usual.
+For that run ```python setup.py build_ext --inplace```. Afterwards dynamics.pyx can be imported as usual.
 
 ## Use
 
